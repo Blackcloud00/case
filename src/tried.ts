@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Application, Assets, Sprite, Ticker, Texture, Container } from "pixi.js";
+import { Application, Assets, Sprite, Ticker, Texture, Container, Filter, GlProgram } from "pixi.js";
 import { PixiPlugin } from "gsap/PixiPlugin";
 import gsap from "gsap";
 import Background from "./Background";
@@ -397,9 +397,77 @@ import Background from "./Background";
 
   };
 
+  
+  // Define shader programs
+  const vertex = `
+    in vec2 aPosition;
+    out vec2 vTextureCoord;
+
+    uniform vec4 uInputSize;
+    uniform vec4 uOutputFrame;
+    uniform vec4 uOutputTexture;
+
+    void main(void) {
+        gl_Position = vec4(aPosition * 1.0 - 0.0, 1.0, 3.0);
+        vTextureCoord = aPosition;
+    }
+`;
+
+  const fragment = `
+  precision mediump float;
+
+  varying vec2 vTextureCoord;
+  uniform sampler2D uSampler;
+  uniform float uWaveAmplitude;
+  uniform float uWaveFrequency;
+  uniform float uTime;
+
+  void main() {
+      vec2 coord = vTextureCoord;
+
+      // Sadece texture üzerinde kaydır
+      coord.x += sin(coord.y * uWaveFrequency + uTime) * uWaveAmplitude;
+
+      gl_FragColor = texture2D(uSampler, coord);
+  }
+`;
+
+  // Create the filter
+const waveFilter = new Filter({
+    glProgram: new GlProgram({ vertex, fragment }),
+    resources: {
+        waveUniforms: {
+            uWaveAmplitude: { value: 0.05, type: 'f32' },
+            uWaveFrequency: { value: 5.0, type: 'f32' },
+            uTime: { value: 0.0, type: 'f32' }
+        }
+    }
+});
+
+
+  // Apply the filter
+  bottleLeftFront.filters = [waveFilter];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Pixi update loop
-  app.ticker.add((ticker: Ticker) => {
-    //bootleRight.rotation += 0.1 * ticker.deltaTime;
+  app.ticker.add((time) => {
+    waveFilter.resources.waveUniforms.uniforms.uTime += 0.1;
   });
 })();
