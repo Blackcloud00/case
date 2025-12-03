@@ -73,8 +73,10 @@ import Background from "./Background";
   const bottleLeftFront = createSprite("Bottle_Front", { x: 400, y: 600, scale: 1 });
   const bottleLeftBack = createSprite("Bottle_Back", { x: 400, y: 590, scale: 1 });
   const waterLeftBody = createSprite("water_body", { x: 400, y: 796, scale: 1.1, tint: 0xe71c1c });
+  const waterLeftBody2 = createSprite("water_body", { x: 400, y: 796, scale: 1.1, tint: 0xe71c1c });
   const ellipseLeftRed = createSprite("EllipseRed", { x: 400, y: 728, scale: 1.1 });
   const rippleLeftRed = createSprite("RippleRed", { x: 405, y: 720, scale: .2 });
+  const particleDown = createSprite("particle1_Red", { x: 400, y: 100, scale: .55, tint: 0xe71c1c });
 
   const particle1 = createSprite("particle1_Red", { x: 408, y: 701, scale: .5 });
   const particle2 = createSprite("particle1_Red", { x: 408, y: 709, scale: .5 });
@@ -86,7 +88,9 @@ import Background from "./Background";
   bootleLeft.addChild(bottleLeftBack);
   bootleLeft.addChild(ellipseLeftRed);
   bootleLeft.addChild(waterLeftBody);
+  bootleLeft.addChild(waterLeftBody2);
   bootleLeft.addChild(rippleLeftRed);
+  bootleLeft.addChild(particleDown);
 
   bootleLeft.addChild(particle1);
   bootleLeft.addChild(particle2);
@@ -126,6 +130,7 @@ import Background from "./Background";
   particle3.alpha = 0;
   particle4.alpha = 0;
   rippleLeftRed.alpha = 0;
+  particleDown.alpha = 0;
 
   rightFlowLine.rotation = -55;
   rightFlowLine.scale.set(.2, 0.1);
@@ -249,25 +254,24 @@ import Background from "./Background";
         ease: "sine.out",
       }, 0.70)
 
-      tl.to(waterLeftBody.scale, {
-        y: 2,
-        duration: 0.3,
+      tl.to(particleDown, {
+        x: particleDown.x + 50,
+        y: particleDown.y + 520,
+        duration: .7,
         ease: "sine.out",
-      }, 0.80);
+      }, 0.50)
 
-      tl.to(waterLeftBody, {
-        y: waterLeftBody.y - 55,
+      tl.to(particleDown, {
+        alpha: 0,
+        duration: .3,
+        ease: "sine.out",
+      }, 1)
+
+      tl.to(waterLeftBody2, {
+        y: waterLeftBody2.y - 100,
         duration: .3,
         ease: "sine.out",
       }, 0.80)
-
-      tl.to(ellipseLeftRed.scale, {
-        y: ellipseLeftRed.scale._y + .4,
-        x: ellipseLeftRed.scale._x + .01,
-        duration: .3,
-        ease: "sine.out",
-      }, 0.80)
-
 
       tl.to(rippleLeftRed.scale, {
         x: rippleLeftRed.scale.x + .2,
@@ -282,7 +286,7 @@ import Background from "./Background";
       }, 1.0);
 
 
-      tl.to([rippleLeftRed, ellipseLeftRed, particle1, particle2, particle3, particle4], {
+      tl.to([rippleLeftRed, ellipseLeftRed, particle1, particle2, particle3, particle4, particleDown], {
         alpha: 1,
         duration: 0.05,
         ease: "sine.out",
@@ -336,6 +340,56 @@ import Background from "./Background";
       }, 0.85);
 
 
+
+
+
+
+
+
+
+
+
+
+      tl.to(ellipseRightRed.scale, {
+        x: ellipseRightRed.scale.x - .7,
+         y: ellipseRightRed.scale.y + 1.2,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.5);
+
+      tl.to(waterRightBody.scale, {
+        x: waterRightBody.scale.x - .7,
+        y: waterRightBody.scale.y + 1.2,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.5);
+
+      tl.to(ellipseRightRed, {
+        x: ellipseRightRed.x - 50,
+        y: ellipseRightRed.y - 275,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.5);
+
+      tl.to(waterRightBody, {
+        x: waterRightBody.x - 50,
+        y: waterRightBody.y - 200,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.5);
+
+      tl.to(ellipseRightRed.scale, {
+        x: ellipseRightRed.scale.x - 1.1,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.8);
+
+      tl.to(waterRightBody.scale, {
+        x: waterRightBody.scale.x - 1.1,
+        duration: 0.3,
+        ease: "sine.out",
+      }, 0.8);
+
       tl.to(rightFlowLine.scale, {
         x: rightFlowLine.scale.x - .2,
         duration: 0.2,
@@ -355,6 +409,30 @@ import Background from "./Background";
         duration: .3,
         ease: "sine.out",
       }, 1.2)
+
+      tl.to(ellipseLeftRed.scale, {
+        y: ellipseLeftRed.scale.y + .4,
+        duration: 0.3,
+        ease: "sine.out",
+        onComplete() {
+          gsap.to(ellipseLeftRed.scale, {
+            y: ellipseLeftRed.scale.y - .4,
+            duration: 0.4
+          });
+        }
+      }, 1);
+
+      tl.to(ellipseLeftRed.scale, {
+        y: ellipseLeftRed.scale.y + .4,
+        duration: 0.3,
+        ease: "sine.out",
+        onComplete() {
+          gsap.to(ellipseLeftRed.scale, {
+            y: ellipseLeftRed.scale.y - .4,
+            duration: 0.4
+          });
+        }
+      }, 1.3);
     }
 
     if (lastClicked == null)
@@ -394,6 +472,20 @@ import Background from "./Background";
       duration: 0.4,
       ease: "power2.out"
     });
+
+
+    gsap.to(ellipseRightRed.scale, {
+      y: ellipseRightRed.scale.y + .4,
+      duration: 0.3,
+      ease: "sine.out",
+      onComplete() {
+        gsap.to(ellipseRightRed.scale, {
+          y: ellipseRightRed.scale.y - .4,
+          duration: 0.4
+        });
+      }
+    });
+
 
   };
 
